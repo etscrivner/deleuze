@@ -1,0 +1,10 @@
+-r common.txt
+nose
+ipdb
+ipython
+factory-boy
+fake-factory
+mock
+expecter
+pyflakes
+pep8
