@@ -1,7 +1,13 @@
 # Deleuze
 
 A simple system for generating new python projects according to a resonable
-default skeleton. Example:
+default skeleton.
+
+Install:
+
+`$ pip install deleuze`
+
+Example:
 
 `$ deleuze new supertool`
 
