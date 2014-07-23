@@ -3,19 +3,21 @@ import os
 import shutil
 import sys
 
+sys.path.append(os.getcwd())
+
 import jinja2
 
 
-def copy_templated_file(base_dir, src, dest, context):
+def copy_templated_file(dest_dir, src, dest, context):
     """Copies the given template file after applying the given context.
 
     """
-    env = jinja2.Environment(loader=jinja2.FileSystemLoader(base_dir))
+    env = jinja2.Environment(loader=jinja2.FileSystemLoader(dest_dir))
     template = env.get_template(src)
 
     result = template.render(**context)
 
-    with open(os.path.join(base_dir, dest), 'w') as f:
+    with open(os.path.join(dest_dir, dest), 'w') as f:
         f.write(result)
 
 
@@ -47,6 +49,9 @@ class Deleuze(object):
 
         self.command = args[1]
         self.directory = args[2]
+        self.current_dir = os.getcwd()
+        self.script_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+        print "{} - {} - {} - {}".format(self.command, self.directory, self.current_dir, self.script_dir)
 
     def _prompt_for_answers(self, questions):
         """Takes a dictionary whose keys are considered command prompts and
@@ -96,10 +101,13 @@ class Deleuze(object):
 
         answered_questions = self._prompt_for_answers(prompts)
 
-        shutil.copytree('project-skeleton', self.directory)
+        shutil.copytree(
+            os.path.join(self.script_dir, 'project-skeleton'),
+            os.path.join(self.current_dir, self.directory)
+        )
 
         copy_templated_file(
-            os.path.abspath(self.directory),
+            os.path.join(self.current_dir, self.directory),
             'setup.jinja.py',
             'setup.py',
             answered_questions
